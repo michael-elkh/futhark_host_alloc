@@ -9,13 +9,14 @@ CFLAGS=-Xptxas -O3
 LIBS+=-lcuda -lcudart -lnvrtc
 VERSION=__CUDA__
 else
-CC=gcc
-CFLAGS=-std=gnu11 -O3 #-Wall -Wextra -g -fsanitize=leak -fsanitize=undefined
-VERSION=__C__
 ifeq ($(TARGET),opencl)
 LIBS+=-lOpenCL
 VERSION=__OPENCL__
+else
+VERSION=__C__
 endif
+CC=gcc
+CFLAGS=-std=gnu11 -O3
 endif
 
 all: $(TARGET)_bandwidth
