@@ -25,7 +25,7 @@ int main(){
 For compilation you can choose the backend with a C macro, for exemple with gcc :
 
 ```bash
-gcc -c [-D{__C__|__CUDA__|__OPENCL__}] -std=gnu11 lib_host_alloc/futhark_host_alloc.c
+gcc -c [-D{__FUTHARK_BACKEND_c__|__FUTHARK_BACKEND_cuda__|__FUTHARK_BACKEND_opencl__}] ...
 ```
 
 The default backend is C.
