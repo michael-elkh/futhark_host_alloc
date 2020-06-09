@@ -2,26 +2,25 @@ ifeq ($(TARGET),)
 TARGET=cuda
 endif
 
+
 LIBS=-lm
 ifeq ($(TARGET),cuda)
 CC=nvcc
 CFLAGS=-Xptxas -O3
 LIBS+=-lcuda -lcudart -lnvrtc
-VERSION=__CUDA__
 else
 ifeq ($(TARGET),opencl)
 LIBS+=-lOpenCL
-VERSION=__OPENCL__
-else
-VERSION=__C__
 endif
 CC=gcc
 CFLAGS=-std=gnu11 -O3
 endif
 
+VERSION=FUTHARK_BACKEND_$(TARGET)
+
 all: $(TARGET)_bandwidth
 
-$(TARGET)_%: %.o bandwidth_wrap.o ../lib_host_alloc/futhark_host_alloc.o
+$(TARGET)_%: %.o bandwidth_wrap.o
 	$(CC) $(CFLAGS) $(notdir $^) -o $@ $(LIBS)
 
 %.c: %.fut

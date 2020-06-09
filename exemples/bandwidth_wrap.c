@@ -6,9 +6,9 @@
 #include <stdio.h>
 #include "bandwidth.h"
 #include "time.h"
-#include "../lib_host_alloc/futhark_host_alloc.h"
+#include "../futhark_host_alloc.h"
 
-#define SIZE (1 << 12)
+#define SIZE (1 << 25)
 
 int main()
 {
