@@ -20,7 +20,7 @@ endif
 
 all: $(TARGET)_bandwidth
 
-$(TARGET)_%: %.o bandwidth_wrap.o lib_host_alloc/futhark_host_alloc.o
+$(TARGET)_%: %.o bandwidth_wrap.o ../lib_host_alloc/futhark_host_alloc.o
 	$(CC) $(CFLAGS) $(notdir $^) -o $@ $(LIBS)
 
 %.c: %.fut

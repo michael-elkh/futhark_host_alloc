@@ -52,6 +52,6 @@ Mkfile.old
 dkms.conf
 
 #Futhark and binaries
-bandwidth.c
-bandwidth.h
-*_bandwidth
+exemples/bandwidth.c
+exemples/bandwidth.h
+exemples/*_bandwidth
