@@ -1,6 +1,12 @@
+/*
+ * Project : Futhark host alloc
+ * Author : El Kharroubi Michaël
+ * Date : 2020  
+*/
 #ifndef __FHA__
 #define __FHA__
 #include <stdlib.h>
+#define UNUSED(x) ((void)(x))
 
 typedef enum result
 {
