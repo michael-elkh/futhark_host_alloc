@@ -22,7 +22,7 @@ int main(){
 
 `FHA_RESULT` is an enum with two values (FHA_SUCCESS, FHA_FAIL).
 
-For compilation you can choose the backend with the a C macro, for exemple with gcc :
+For compilation you can choose the backend with a C macro, for exemple with gcc :
 
 ```bash
 gcc -c [-D{__C__|__CUDA__|__OPENCL__}] -std=gnu11 lib_host_alloc/futhark_host_alloc.c
