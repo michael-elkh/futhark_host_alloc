@@ -50,14 +50,6 @@ FHA_RESULT futhark_host_alloc(struct futhark_context *ctx, void **mem, size_t si
         return FHA_FAIL;
     }
 
-    FHA_RESULT fha_res = flush_and_finish(cq);
-    if (fha_res != FHA_SUCCESS)
-    {
-        clEnqueueUnmapMemObject(cq, cl_memory, *mem - sizeof(cl_mem), 0, NULL, NULL);
-        clReleaseMemObject(cl_memory);
-        return fha_res;
-    }
-
     *(cl_mem *)(*mem - sizeof(cl_mem)) = cl_memory; // Store the cl_mem at the begining of the allocated memoryspace
     return FHA_SUCCESS;
 }
