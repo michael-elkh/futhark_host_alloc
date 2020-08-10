@@ -23,6 +23,7 @@ int main(){
 `FHA_RESULT` is an enum with two values (FHA_SUCCESS, FHA_FAIL).
 
 For compilation you can choose the backend with a C macro, for exemple with gcc :
+*Since Futhark 16.x, this no longer necessary.*
 
 ```bash
 gcc -c [-D{__FUTHARK_BACKEND_c__|__FUTHARK_BACKEND_cuda__|__FUTHARK_BACKEND_opencl__}] ...
