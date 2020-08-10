@@ -16,8 +16,6 @@ CC=gcc
 CFLAGS=-std=gnu11 -O3
 endif
 
-VERSION=FUTHARK_BACKEND_$(TARGET)
-
 all: $(TARGET)_bandwidth
 
 $(TARGET)_%: %.o bandwidth_wrap.o
@@ -27,7 +25,7 @@ $(TARGET)_%: %.o bandwidth_wrap.o
 	futhark $(TARGET) --library $< -o $(@:%.c=%)
 
 %.o: %.c
-	$(CC) -c -D$(VERSION) $(CFLAGS) $^
+	$(CC) -c $(CFLAGS) $^
 
 clean:
 	rm -vf *.o *_bandwidth
