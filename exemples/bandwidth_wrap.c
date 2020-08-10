@@ -21,7 +21,7 @@
 #include "time.h"
 #include "../futhark_host_alloc.h"
 
-#define SIZE (1 << 27)
+#define SIZE (1 << 28)
 
 int main()
 {
@@ -34,23 +34,39 @@ int main()
     int32_t *buffers[2];
     size_t size_in_byte = SIZE * sizeof(int32_t);
 
+    struct timespec start, finish;
+    double seconds_elapsed[2];
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
     FHA_RESULT fres = futhark_host_alloc(f_ctx, (void **)buffers, size_in_byte);
     printf(fres == FHA_SUCCESS ? "Allocation : OK\n" : "Allocation : NOK\n");
+    clock_gettime(CLOCK_MONOTONIC, &finish);
+    seconds_elapsed[0] = (double)(finish.tv_sec - start.tv_sec) + (finish.tv_nsec - start.tv_nsec) / 1.0e6;
+    clock_gettime(CLOCK_MONOTONIC, &start);
     buffers[1] = malloc(size_in_byte);
+    clock_gettime(CLOCK_MONOTONIC, &finish);
+    seconds_elapsed[1] = (double)(finish.tv_sec - start.tv_sec) + (finish.tv_nsec - start.tv_nsec) / 1.0e6;
+
+    printf("Allocation :\n");
+    //FHA
+    printf("    FHA :\n");
+    printf("        Buffer size : %.2lf GB\n", (size_in_byte) / 1e9);
+    printf("        Time: %.4lf ms\n", seconds_elapsed[0]);
+    //Malloc
+    printf("    Std malloc :\n");
+    printf("        Buffer size : %.2lf GB\n", (size_in_byte) / 1e9);
+    printf("        Time: %.4lf ms\n", seconds_elapsed[1]);
+
     //Fill the buffer
     for (size_t i = 0; i < SIZE; i++)
     {
-        buffers[0][i] = (i * i) & 0xFF;
+        buffers[0][i] = buffers[1][i] = (i * i) & 0xFF;
     }
-    memcpy(buffers[1], buffers[0], size_in_byte);
 
     struct futhark_i32_1d *input = NULL;
     struct futhark_i32_1d *output = NULL;
-
-    struct timespec start, finish;
     
     //Measure transfer time back and forth.
-    double seconds_elapsed[2];
     for(int i = 0; i<2; i++){
         clock_gettime(CLOCK_MONOTONIC, &start);
         input = futhark_new_i32_1d(f_ctx, buffers[i], SIZE); // Host -> Device
@@ -60,16 +76,17 @@ int main()
         clock_gettime(CLOCK_MONOTONIC, &finish);
         seconds_elapsed[i] = (double)(finish.tv_sec - start.tv_sec) + (finish.tv_nsec - start.tv_nsec) / 1.0e9;
     }
+    printf("Transfer :\n");
     //FHA
-    printf("FHA :\n");
-    printf("    Buffer size : %.2lf GB\n", (size_in_byte) / 1e9);
-    printf("    Time: %.2lf s\n", seconds_elapsed[0]);
-    printf("    Bandwidth : %.2lf GB/s\n", (2.0 * size_in_byte) / (seconds_elapsed[0] * 1e9));
+    printf("    FHA :\n");
+    printf("        Buffer size : %.2lf GB\n", (size_in_byte) / 1e9);
+    printf("        Time: %.2lf s\n", seconds_elapsed[0]);
+    printf("        Bandwidth : %.2lf GB/s\n", (2.0 * size_in_byte) / (seconds_elapsed[0] * 1e9));
     //Malloc
-    printf("Std malloc :\n");
-    printf("    Buffer size : %.2lf GB\n", (size_in_byte) / 1e9);
-    printf("    Time: %.2lf s\n", seconds_elapsed[1]);
-    printf("    Bandwidth : %.2lf GB/s\n", (2.0 * size_in_byte) / (seconds_elapsed[1] * 1e9));
+    printf("    Std malloc :\n");
+    printf("        Buffer size : %.2lf GB\n", (size_in_byte) / 1e9);
+    printf("        Time: %.2lf s\n", seconds_elapsed[1]);
+    printf("        Bandwidth : %.2lf GB/s\n", (2.0 * size_in_byte) / (seconds_elapsed[1] * 1e9));
 
     fres = futhark_host_free(f_ctx, buffers[0]);
     printf(fres == FHA_SUCCESS ? "Free : OK\n" : "Free : NOK\n");
